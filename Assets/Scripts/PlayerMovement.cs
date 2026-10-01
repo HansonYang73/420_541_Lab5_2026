@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(RigidBody))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
@@ -12,16 +12,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundDistance = 0.5f;
     [SerializeField] private LayerMask groundMask;
 
-    private RigidBody rb;
+    private Rigidbody rb;
     private Vector3 moveDirection;
     private float turnInput;
     private bool isGrounded;
     private bool jumpRequested = false;
+    public bool IsGrounded => isGrounded;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = GetComponent<RigidBody>();
+        rb = GetComponent<Rigidbody>();
 
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
@@ -30,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         isGrounded = Physics.Raycast(transform.position + transform.up*groundDistance/2,
-                                    -transform.up, groundDistance, groundMast);
+                                    -transform.up, groundDistance, groundMask);
 
         turnInput = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
@@ -61,8 +62,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Jump(){
-        rb.linearVelocity = new Vector(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange)
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
     }
 }
